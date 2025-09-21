@@ -1,12 +1,6 @@
-from flask_sqlalchemy import SQLAlchemy
-from app import app
-
-db = SQLAlchemy()
+from extensions import db
 
 class Author(db.Model):
-    """
-    Represents an author in the digital library.
-    """
     __tablename__ = 'authors'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -22,9 +16,6 @@ class Author(db.Model):
 
 
 class Book(db.Model):
-    """
-    Represents a book in the digital library.
-    """
     __tablename__ = 'books'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -40,8 +31,3 @@ class Book(db.Model):
 
     def __str__(self):
         return f"{self.title} ({self.publication_year}) by {self.author.name}"
-
-
-# Create tables in the database
-with app.app_context():
-    db.create_all()
