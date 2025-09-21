@@ -92,9 +92,20 @@ def add_book():
 @app.route('/')
 def home():
     """
-    Display all books on the home page with their authors.
+    Zeigt alle Bücher auf der Startseite an.
+    Wenn ein Suchbegriff vorhanden ist, werden nur passende Bücher angezeigt.
     """
-    books = Book.query.all()
+    search_query = request.args.get('search')  # holt den Suchtext aus dem Formular
+    if search_query:
+        # Suche in Titel und Autorname
+        books = Book.query.join(Author).filter(
+            (Book.title.ilike(f"%{search_query}%")) |
+            (Author.name.ilike(f"%{search_query}%"))
+        ).all()
+        if not books:
+            flash(f'Keine Bücher gefunden für "{search_query}"')
+    else:
+        books = Book.query.all()
     return render_template('home.html', books=books)
 
 
