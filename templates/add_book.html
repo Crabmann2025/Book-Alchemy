@@ -4,35 +4,77 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Add Book</title>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f5f5f5;
+      padding: 20px;
+    }
+    form {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      max-width: 400px;
+      margin: auto;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input[type="text"], input[type="number"], select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      box-sizing: border-box;
+    }
+    input[type="submit"], .home-btn, .add-author-btn {
+      margin-top: 15px;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      color: white;
+      display: inline-block;
+      text-align: center;
+    }
+    input[type="submit"] {
+      background-color: #1976d2;
+    }
+    .home-btn {
+      background-color: #555;
+    }
+    .add-author-btn {
+      background-color: #1976d2;
+    }
+  </style>
 </head>
 <body>
+  <form action="{{ url_for('add_book') }}" method="POST">
+    <h2>Add Book</h2>
 
-<h1>Add Book</h1>
+    <label for="title">Title:</label>
+    <input type="text" id="title" name="title" required>
 
-<!-- Navigation -->
-<a href="{{ url_for('home') }}"><button>Back to Home</button></a>
-<a href="{{ url_for('add_author') }}"><button>Add Author</button></a>
+    <label for="isbn">ISBN:</label>
+    <input type="text" id="isbn" name="isbn" required>
 
-<form action="{{ url_for('add_book') }}" method="POST">
-  <label for="title">Title:</label>
-  <input type="text" id="title" name="title" required><br><br>
+    <label for="publication_year">Publication Year:</label>
+    <input type="number" id="publication_year" name="publication_year">
 
-  <label for="isbn">ISBN:</label>
-  <input type="text" id="isbn" name="isbn" required><br><br>
+    <label for="author_id">Author:</label>
+    <select id="author_id" name="author_id" required>
+      <option value="">--Select Author--</option>
+      {% for author in authors %}
+        <option value="{{ author.id }}">{{ author.name }}</option>
+      {% endfor %}
+    </select>
 
-  <label for="publication_year">Publication Year:</label>
-  <input type="number" id="publication_year" name="publication_year"><br><br>
-
-  <label for="author_id">Author:</label>
-  <select id="author_id" name="author_id" required>
-    <option value="">--Select Author--</option>
-    {% for author in authors %}
-      <option value="{{ author.id }}">{{ author.name }}</option>
-    {% endfor %}
-  </select><br><br>
-
-  <input type="submit" value="Add Book">
-</form>
-
+    <input type="submit" value="Add Book">
+    <a href="{{ url_for('home') }}" class="home-btn">Back to Home</a>
+    <a href="{{ url_for('add_author') }}" class="add-author-btn">Add Author</a>
+  </form>
 </body>
 </html>

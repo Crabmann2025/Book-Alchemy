@@ -5,51 +5,95 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Library</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    .container { border: 1px solid #ccc; padding: 15px; margin-bottom: 10px; border-radius: 5px; }
-    .buttons { margin-bottom: 20px; }
-    .buttons a { margin-right: 10px; text-decoration: none; padding: 8px 12px; background: #4CAF50; color: white; border-radius: 4px; }
-    form { margin-bottom: 20px; }
-    input[type="text"] { padding: 5px; width: 200px; }
-    input[type="submit"] { padding: 5px 10px; }
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    h1 {
+      margin: 0;
+    }
+    .button-group a {
+      text-decoration: none;
+      padding: 8px 16px;
+      margin-left: 10px;
+      background-color: #1976d2;
+      color: white;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    .search-form {
+      margin: 20px 0;
+    }
+    .search-form input[type="text"] {
+      padding: 6px;
+      width: 200px;
+    }
+    .search-form input[type="submit"] {
+      padding: 6px 12px;
+      background-color: #1976d2;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    .book-card {
+      background-color: white;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .book-card h3 {
+      margin-top: 0;
+    }
+    .book-card form {
+      display: inline-block;
+      margin-top: 10px;
+    }
+    .book-card input[type="submit"] {
+      padding: 5px 10px;
+      background-color: #d32f2f;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
+  <header>
+    <h1>My Library</h1>
+    <div class="button-group">
+      <a href="{{ url_for('add_author') }}">Add Author</a>
+      <a href="{{ url_for('add_book') }}">Add Book</a>
+    </div>
+  </header>
 
-<h1>My Library</h1>
-
-<div class="buttons">
-  <a href="{{ url_for('add_author') }}">Add New Author</a>
-  <a href="{{ url_for('add_book') }}">Add New Book</a>
-</div>
-
-<form action="{{ url_for('home') }}" method="POST">
-  <input type="text" name="search" placeholder="Search books...">
-  <input type="submit" value="Search">
-</form>
-
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
-
-{% for book in books %}
-<div class="container">
-  <h3><a href="{{ url_for('book_detail', book_id=book.id) }}">{{ book.title }}</a></h3>
-  <p>Author: <a href="{{ url_for('author_detail', author_id=book.author.id) }}">{{ book.author.name }}</a></p>
-  <p>Published: {{ book.publication_year }}</p>
-  <p>ISBN: {{ book.isbn }}</p>
-
-  <form action="{{ url_for('delete_book', book_id=book.id) }}" method="POST" style="display:inline;">
-    <input type="submit" value="Delete Book">
+  <form class="search-form" action="{{ url_for('home') }}" method="GET">
+    <input type="text" name="q" placeholder="Search books..." value="{{ request.args.get('q', '') }}">
+    <input type="submit" value="Search">
   </form>
-</div>
-{% endfor %}
 
+  {% if books %}
+    {% for book in books %}
+      <div class="book-card">
+        <h3><a href="{{ url_for('book_detail', book_id=book.id) }}">{{ book.title }}</a></h3>
+        <p>by <a href="{{ url_for('author_detail', author_id=book.author.id) }}">{{ book.author.name }}</a> ({{ book.publication_year }})</p>
+        <form action="{{ url_for('delete_book', book_id=book.id) }}" method="POST">
+          <input type="submit" value="Delete Book">
+        </form>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>No books found.</p>
+  {% endif %}
 </body>
 </html>

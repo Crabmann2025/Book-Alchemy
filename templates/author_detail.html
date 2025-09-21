@@ -3,26 +3,66 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ author.name }} - Details</title>
+  <title>{{ author.name }} Details</title>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f5f5f5;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin: auto;
+    }
+    h1 {
+      margin-top: 0;
+    }
+    a.button {
+      display: inline-block;
+      padding: 8px 16px;
+      margin-top: 15px;
+      background-color: #1976d2;
+      color: white;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .info p {
+      margin: 8px 0;
+    }
+    .books-list {
+      margin-top: 15px;
+    }
+    .books-list li {
+      margin-bottom: 6px;
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
+    <h1>{{ author.name }}</h1>
+    <div class="info">
+      <p><strong>Birth Date:</strong> {{ author.birth_date or "N/A" }}</p>
+      <p><strong>Date of Death:</strong> {{ author.date_of_death or "N/A" }}</p>
+    </div>
 
-<h1>{{ author.name }}</h1>
-<p>Birth Date: {{ author.birth_date }}</p>
-<p>Date of Death: {{ author.date_of_death }}</p>
+    <h3>Books by {{ author.name }}:</h3>
+    {% if author.books %}
+      <ul class="books-list">
+        {% for book in author.books %}
+          <li><a href="{{ url_for('book_detail', book_id=book.id) }}">{{ book.title }}</a> ({{ book.publication_year }})</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No books found for this author.</p>
+    {% endif %}
 
-<h2>Books by {{ author.name }}:</h2>
-<ul>
-  {% for book in author.books %}
-    <li><a href="{{ url_for('book_detail', book_id=book.id) }}">{{ book.title }}</a></li>
-  {% endfor %}
-</ul>
-
-<form action="{{ url_for('delete_author', author_id=author.id) }}" method="POST">
-  <input type="submit" value="Delete Author and All Books">
-</form>
-
-<a href="{{ url_for('home') }}">Back to Library</a>
-
+    <a href="{{ url_for('home') }}" class="button">Back to Home</a>
+    <a href="{{ url_for('add_author') }}" class="button">Add Author</a>
+  </div>
 </body>
 </html>
