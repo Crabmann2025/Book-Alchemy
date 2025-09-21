@@ -1,67 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bibliothek</title>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Meine Bibliothek</title>
     <style>
-        /* Container für jedes Buch */
-        .book-container {
-            border: 1px solid #ccc;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
-
-        /* Buttons */
-        .top-buttons button {
-            margin-right: 10px;
-            padding: 10px 15px;
-            cursor: pointer;
-        }
-
-        /* Suchfeld */
-        .search-form input[type="text"] {
-            padding: 8px;
-            width: 200px;
-        }
-        .search-form input[type="submit"] {
-            padding: 8px 12px;
-            cursor: pointer;
-        }
+      .book-container {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin: 10px 0;
+      }
+      .book-title {
+        font-weight: bold;
+      }
+      .book-author {
+        font-style: italic;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <h1>Meine Bibliothek</h1>
 
-    <!-- Buttons für Formulare -->
-    <div class="top-buttons">
-        <a href="{{ url_for('add_author') }}"><button>Neuen Autor hinzufügen</button></a>
-        <a href="{{ url_for('add_book') }}"><button>Neues Buch hinzufügen</button></a>
-    </div>
+    <a href="{{ url_for('add_author') }}"><button>Neuen Autor hinzufügen</button></a>
+    <a href="{{ url_for('add_book') }}"><button>Neues Buch hinzufügen</button></a>
 
-    <hr>
-
-    <!-- Suchfeld -->
-    <form class="search-form" action="{{ url_for('home') }}" method="GET">
-        <input type="text" name="search" placeholder="Nach Büchern suchen">
-        <input type="submit" value="Suchen">
+    <form method="GET" action="{{ url_for('home') }}">
+      <input type="text" name="keyword" placeholder="Nach Büchern suchen">
+      <input type="submit" value="Search">
     </form>
 
-    <hr>
-
-    <!-- Bücherliste -->
-    {% if books %}
-        {% for book in books %}
-            <div class="book-container">
-                <strong>{{ book.title }}</strong> von {{ book.author.name }} ({{ book.publication_year }})
-            </div>
-        {% endfor %}
-    {% else %}
-        <p>Keine Bücher gefunden.</p>
-    {% endif %}
-
-</body>
+    {% for book in books %}
+      <div class="book-container">
+        <span class="book-title">{{ book.title }}</span> von
+        <span class="book-author">{{ book.author.name }}</span> ({{ book.publication_year }})
+        <form action="{{ url_for('delete_book', book_id=book.id) }}" method="POST" style="display:inline;">
+          <button type="submit">Buch löschen</button>
+        </form>
+      </div>
+    {% endfor %}
+  </body>
 </html>
